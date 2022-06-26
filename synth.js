@@ -37,7 +37,9 @@ function getBeat(n, x=1) {
 
 let seqs = [];
 function getSeq(synth, chord, octave, release, tempo, start=0, hold) {
+  const color = seqs.length * 25;
   const seq = new Tone.Sequence((time, note) => {
+    stuff.innerHTML = stuff.innerHTML + ` <span style="font-family:mono;font-weight:bold;color:rgb(${color}, 100, ${color});">${note}</span>`;
     synth.triggerAttackRelease(note, release, time);
   }, getChord(chord, octave), tempo).start(start + "m");
   seq['octave'] = octave;
@@ -56,7 +58,7 @@ function getSeqNoise(synth, chord, octave, release, tempo, start=0, hold) {
   return seq;
 }
 
- function gainLFO(dur, from, to) {
+function gainLFO(dur, from, to) {
   const g = new Tone.Gain().toDestination();
   const lfox = new Tone.LFO(dur, from, to);
   lfox.shape="sawtooth";
@@ -115,45 +117,46 @@ const start = function(chord) {
 
   const msUpper = new Tone.PolySynth({volume:-30}).toDestination();
 
-  const g8a = gainLFO("16m", 0.001, 0.22);
+  const swVox = new Tone.StereoWidener(0.2);
+  const g8a = gainLFO("16m", 0.001, 0.32);
   const props = {
     detune:1,
-    portamento:0.1,
-    oscillator: {type:"square"},
-	envelope: {
-	  attack: 3,
-	  decay: 3,
-	  release: 1
-	}};
-  const msUpper1 = new Tone.MonoSynth(props).chain(dist, feedbackDelay, reverb, g8a);
-  const msUpper2 = new Tone.MonoSynth(props).chain(dist, feedbackDelay, reverb, g8a);
-  const msUpper2a = new Tone.MonoSynth(props).chain(dist, feedbackDelay, reverb, g8a);
+    portamento:0.13,
+    oscillator: {type:"sawtooth"},
+	  envelope: {
+	    attack: 3,
+	    decay: 3,
+	    release: 1
+	  }};
 
+  const msUpper1 = new Tone.MonoSynth(props).chain(swVox, dist, feedbackDelay, reverb, g8a);
+  const msUpper2 = new Tone.MonoSynth(props).chain(swVox, dist, feedbackDelay, reverb, g8a);
+  const msUpper2a = new Tone.MonoSynth(props).chain(swVox, dist, feedbackDelay, reverb, g8a);
 
   const g24 = gainLFO("32m", 0.01, 0.1);
   const msUpper3 = new Tone.MonoSynth().connect(g24);
 
-const sw = new Tone.StereoWidener();
-  const g32b = gainLFO("32m", 0.1, 0.17);
+  const sw = new Tone.StereoWidener();
+  const g32b = gainLFO("16m", 0.01, 0.05);
   const msUpper4 = new Tone.MonoSynth()
                            .chain(g32b, dist, sw, feedbackDelay);
 
- const seqDrums = getSeq(drums, chord, 1, 0.1, "2m", 0);
- const seqDrums2 = getSeqNoise(drums2, chord, 1, 0.1, "3m", 0);
+  const seqDrums = getSeq(drums, chord, 1, 0.1, "2m", 0);
+  const seqDrums2 = getSeqNoise(drums2, chord, 1, 0.1, "3m", 0);
 
- const seqLeadPluck = getSeq(ps2, chord, 4, 12, "1m", 0);
- const seqLeadPluck2 = getSeq(ps3, chord, 2, 12, "2n", 0);
+  const seqLeadPluck = getSeq(ps2, chord, 4, 12, "1m", 0);
+  const seqLeadPluck2 = getSeq(ps3, chord, 2, 12, "2n", 0);
 
 
-const seqLeadMonoHigh1 = getSeq(msUpper1, chord, 6, 12, "12n", "16m");
-const seqLeadMonoHigh2 = getSeq(msUpper2, chord, 3, 12, "3n", "16m");
-const seqLeadMonoHigh2a = getSeq(msUpper2a, chord, 5, 12, "6n", "16m");
+  const seqLeadMonoHigh1 = getSeq(msUpper1, chord, 6, 12, "12n", "16m");
+  const seqLeadMonoHigh2 = getSeq(msUpper2, chord, 3, 12, "3n", "16m");
+  const seqLeadMonoHigh2a = getSeq(msUpper2a, chord, 5, 12, "6n", "16m");
 
- const seqLeadMonoHigh3 = getSeq(msUpper3, chord, 5, 0.1, "16n", "8m");
-const seqLeadMonoHigh4 = getSeq(msUpper4, chord, 4, 8, "8n", "8m");
+  const seqLeadMonoHigh3 = getSeq(msUpper3, chord, 5, 0.1, "16n", "8m");
+  const seqLeadMonoHigh4 = getSeq(msUpper4, chord, 4, 8, "8n", "8m");
 
-const seqLeadMonoHigh = getSeq(msUpper, chord, 4, 5, "2m", 0);
-const seqLeadMono = getSeq(ms, chord, 2, 3, "1m", 0);
+  const seqLeadMonoHigh = getSeq(msUpper, chord, 4, 5, "2m", 0);
+  const seqLeadMono = getSeq(ms, chord, 2, 3, "1m", 0);
 }
 
 let playing = false;
@@ -168,7 +171,7 @@ document.querySelector('button')?.addEventListener("click", () => {
     const loop = new Tone.Loop((time) => {
       seqs.forEach((seq)=>{
         const chord = chords[i % chords.length];
-        stuff.innerHTML = `${chord}`;
+        stuff.innerHTML = `<h2>${chord}</h2>`;
 
         seq.set({events:getChord(chord, seq.octave)});
       })
@@ -187,12 +190,12 @@ document.querySelector('button')?.addEventListener("click", () => {
 });
 
 
-  document.querySelector('input#a')?.addEventListener("change", (e) => {
-    const n = e.target.value * 5;
-    // seqB.events = getBeat(n, 0);
-  });
+document.querySelector('input#a')?.addEventListener("change", (e) => {
+  const n = e.target.value * 5;
+  // seqB.events = getBeat(n, 0);
+});
 
-  document.querySelector('input#b')?.addEventListener("change", (e) => {
-    const n = e.target.value * 5;
-    // seqC.events = getBeat(n);
-  });
+document.querySelector('input#b')?.addEventListener("change", (e) => {
+  const n = e.target.value * 5;
+  // seqC.events = getBeat(n);
+});
