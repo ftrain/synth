@@ -2,6 +2,7 @@ const trans = Tone.Transport;
 trans.bpm.value = 120;
 
 const stuff = document.querySelector('div#stuff');
+const controls = document.querySelector('div#controls');
 
 const _ = null;
 const makeArr = function(base, mult, len) {
@@ -18,7 +19,45 @@ const makeArr = function(base, mult, len) {
 
 const feedbackDelay = new Tone.FeedbackDelay("8n", 0.5);
 const dist = new Tone.Distortion(0.5);
+
+function makeEl(name, effect, key, min, max) {
+  const div = document.createElement("div");
+  const prefix = document.createElement("span");
+  const display = document.createElement("span");
+  const input = document.createElement("input");
+  input.type = "range";
+  input.min = min;
+  input.max = max;
+  input.value = min;
+  input.step = (max - min)/1000;
+  display.innerHTML = input.value;
+  prefix.innerHTML = name;
+  input.addEventListener("change", (e) => {
+    effect.set({[key]:e.target.value});
+    display.innerHTML = e.target.value;
+  });
+  input.addEventListener("move", (e) => {
+    effect.set({[key]:e.target.value});
+    display.innerHTML = e.target.value;
+  });
+  div.append(prefix);
+  div.append(input);
+  div.append(display);
+  controls.append(div);
+}
+
 const reverb = new Tone.Reverb();
+makeEl("verbdecay", reverb, 'decay', 0.001, 20);
+makeEl("distortion", dist, 'distortion', 0.001, 1);
+
+
+document.querySelector('input#a')?.addEventListener("change", (e) => {
+  console.log(e.target.value/10);
+  reverb.set({decay:e.target.value/10});
+});
+
+
+
 const autoFilter = new Tone.AutoFilter(0.125).start();
 
 let base = 110;
@@ -147,9 +186,8 @@ const start = function(chord) {
   const seqLeadPluck = getSeq(ps2, chord, 4, 12, "1m", 0);
   const seqLeadPluck2 = getSeq(ps3, chord, 2, 12, "2n", 0);
 
-
   const seqLeadMonoHigh1 = getSeq(msUpper1, chord, 6, 12, "12n", "16m");
-  const seqLeadMonoHigh2 = getSeq(msUpper2, chord, 3, 12, "3n", "16m");
+  const seqLeadMonoHigh2 = getSeq(msUpper2, chord, 2, 12, "3n", "16m");
   const seqLeadMonoHigh2a = getSeq(msUpper2a, chord, 5, 12, "6n", "16m");
 
   const seqLeadMonoHigh3 = getSeq(msUpper3, chord, 5, 0.1, "16n", "8m");
@@ -189,13 +227,3 @@ document.querySelector('button')?.addEventListener("click", () => {
   }
 });
 
-
-document.querySelector('input#a')?.addEventListener("change", (e) => {
-  const n = e.target.value * 5;
-  // seqB.events = getBeat(n, 0);
-});
-
-document.querySelector('input#b')?.addEventListener("change", (e) => {
-  const n = e.target.value * 5;
-  // seqC.events = getBeat(n);
-});
