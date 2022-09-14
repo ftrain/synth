@@ -1,24 +1,23 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Oscillator</title><!--
-    <script src="node_modules/tone/build/Tone.js"></script>
-    <script src=
-                "node_modules/@tonaljs/tonal/browser/tonal.min.js"></script>
-    -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bookmark Synthesizer</title>
+    <link rel="stylesheet" href="./src/index.css" />
+    <script type="module" src="./src/custom-synths.ts"></script>
+  </head>
+  <body>
+    <h1>Bookmark Synth</h1>
+    <custom-synths></custom-synths>
 
-    <script src=
-    "https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.40/Tone.js"></script>
-    <script src=
-    "https://cdn.jsdelivr.net/npm/@tonaljs/tonal/browser/tonal.min.js"></script>
-</head>
-<body>
-    <div id="controls"></div>
-    <div>
-        <button>START</button>
-    </div>
-    <div id="stuff"></div>
-    <script type="text/javascript" src="synth.js"></script>
-</body>
+    <p>See also:
+      <a href="https://abacusynth.eliasjarzombek.com/">Abacus Synth</a> (<a href="https://github.com/ejarzo/abacusynth">src</a>)
+
+      <a href="https://apps.musedlab.org/groovepizza/?museid=gfg0_wClL&">Groove Pizza</a>
+
+      <a href="https://github.com/spectrome/patchcab">patchcab</a>
+    </p>
+  </body>
 </html>
