@@ -28,7 +28,7 @@ function makeEl(name, effect, key, min, max) {
   input.type = "range";
   input.min = min;
   input.max = max;
-  input.value = min;
+  input.value = effect.get(key);
   input.step = (max - min)/1000;
   display.innerHTML = input.value;
   prefix.innerHTML = name;
@@ -36,7 +36,7 @@ function makeEl(name, effect, key, min, max) {
     effect.set({[key]:e.target.value});
     display.innerHTML = e.target.value;
   });
-  input.addEventListener("move", (e) => {
+  input.addEventListener("input", (e) => {
     effect.set({[key]:e.target.value});
     display.innerHTML = e.target.value;
   });
@@ -50,13 +50,10 @@ const reverb = new Tone.Reverb();
 makeEl("verbdecay", reverb, 'decay', 0.001, 20);
 makeEl("distortion", dist, 'distortion', 0.001, 1);
 
-
 document.querySelector('input#a')?.addEventListener("change", (e) => {
   console.log(e.target.value/10);
   reverb.set({decay:e.target.value/10});
 });
-
-
 
 const autoFilter = new Tone.AutoFilter(0.125).start();
 
@@ -76,9 +73,9 @@ function getBeat(n, x=1) {
 
 let seqs = [];
 function getSeq(synth, chord, octave, release, tempo, start=0, hold) {
-  const color = seqs.length * 25;
+  const color = seqs.length * 35;
   const seq = new Tone.Sequence((time, note) => {
-    stuff.innerHTML = stuff.innerHTML + ` <span style="font-family:mono;font-weight:bold;color:rgb(${color}, 100, ${color});">${note}</span>`;
+    stuff.innerHTML = stuff.innerHTML + `-<span style="font-family:mono;font-weight:bold;color:white;background:rgb(${color}, 100, ${color});">${note}</span>`;
     synth.triggerAttackRelease(note, release, time);
   }, getChord(chord, octave), tempo).start(start + "m");
   seq['octave'] = octave;

@@ -1,0 +1,10 @@
+#+title: Building Web Components with Lit
+
+One of the most interesting things of the last 15 years has been the maturation of the web into a full-fledged computing platform. It does all the things a computer can do, including relatively robust audio and sound synthesis. The biggest of the JavaScript sound synthesis libraries is called Tone.js and I found it pretty easy to learn, although as with all things synthesis, it's likely to go SKRRRRRRCH and go silence, or to create a tone that can't be stopped, and the problem of "volume" is surprisingly difficult.
+
+I'm not a musician (I like to work for money) but I do like making soft drones with chords and turning knobs, and I wanted to program for a day or two, so I messed around and made a sequencer. You hit one button and a synth starts and runs forever making drone chords.
+
+At some point, as always happens, I wanted to twiddle with it in real time instead of programming it. There exist good widget toolkits already for Tone.js, but I like the old ugly web and slider, so I decided to use Web Components and learn the "Lit" framework.
+
+I like web components. Like all web technologies they represent a set of BLRGHGJHGAPO"DADG:LJNKDASGKHL:"N
+"
